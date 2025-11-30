@@ -1,0 +1,40 @@
+############################
+# Maven / Gradle / Build
+############################
+/target/
+/build/
+/out/
+
+############################
+# Eclipse / STS / eGov
+############################
+.classpath
+.project
+.settings/
+/.metadata/
+/.recommenders/
+
+############################
+# IntelliJ / VSCode (혹시 열었을 경우)
+############################
+.idea/
+*.iml
+.vscode/
+
+############################
+# Logs / Temp
+############################
+logs/
+*.log
+*.tmp
+
+# Tomcat / WTP 임시 배포
+/.metadata/.plugins/
+/wtpwebapps/
+/tmp*/
+
+############################
+# OS 특화 파일
+############################
+.DS_Store
+Thumbs.db
