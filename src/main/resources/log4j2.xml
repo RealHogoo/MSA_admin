@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- 콘솔 출력 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t] %c{1} - %m%n"/>
+        </Console>
+
+        <!-- 파일 로그: 톰캣 logs/admin-service.log -->
+        <RollingFile name="File"
+                     fileName="${sys:catalina.base}/logs/admin-service.log"
+                     filePattern="${sys:catalina.base}/logs/admin-service-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1} - %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+	<Loggers>
+	    <!-- 우리 코드 -->
+	    <Logger name="msa" level="debug" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	
+	    <!-- ★ log4jdbc: 파라미터 치환된 SQL만 찍기 -->
+	    <Logger name="jdbc.sqlonly" level="debug" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	
+	    <!-- (원하면 실행 시간까지 보고 싶을 때만 켜기) -->
+	    <!--
+	    <Logger name="jdbc.sqltiming" level="debug" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	    -->
+	
+	    <!-- ★ 결과 테이블 / ResultSet / Connection 로그 전부 OFF -->
+	    <Logger name="jdbc.resultsettable" level="off" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	    <Logger name="jdbc.resultset" level="off" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	    <Logger name="jdbc.audit" level="off" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	    <Logger name="jdbc.connection" level="off" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	
+	    <!-- 혹시 예전에 쓰이던 이름들 강제로 묵음 처리 -->
+	    <Logger name="log4j2" level="off" additivity="false">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Logger>
+	
+	    <Root level="info">
+	        <AppenderRef ref="Console"/>
+	        <AppenderRef ref="File"/>
+	    </Root>
+	</Loggers>
+
+
+</Configuration>

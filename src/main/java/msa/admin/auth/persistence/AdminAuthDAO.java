@@ -1,0 +1,20 @@
+package msa.admin.auth.persistence;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.rte.psl.dataaccess.EgovAbstractMapper;
+import msa.admin.auth.vo.AdminUserVO;
+
+@Repository("adminAuthDAO")
+public class AdminAuthDAO extends EgovAbstractMapper {
+
+    public AdminUserVO selectUserForLogin(String userId) {
+        return selectOne("adminAuth.selectUserForLogin", userId);
+    }
+
+    public List<String> selectUserRoles(String userId) {
+        return selectList("adminAuth.selectUserRoles", userId);
+    }
+}

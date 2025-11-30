@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="adminAuth">
+
+    <!-- 사용자 조회 (로그인용) -->
+    <select id="selectUserForLogin" parameterType="string" resultType="msa.admin.auth.vo.AdminUserVO">
+        SELECT
+            USER_ID    AS userId,
+            LOGIN_ID    AS loginId,
+            USER_PW    AS userPw,
+            USER_NM    AS userNm,
+            EMAIL      AS email,
+            USE_YN     AS useYn
+        FROM ADMIN_USER
+        WHERE LOGIN_ID = #{loginId}
+          AND USE_YN = 'Y'
+    </select>
+
+    <!-- 사용자 역할 목록 -->
+    <select id="selectUserRoles" parameterType="string" resultType="string">
+        SELECT R.ROLE_ID
+        FROM ADMIN_USER_ROLE UR
+            JOIN ADMIN_ROLE R ON UR.ROLE_ID = R.ROLE_ID
+        WHERE UR.USER_ID = #{userId}
+          AND R.USE_YN = 'Y'
+    </select>
+
+</mapper>
