@@ -1,7 +1,5 @@
 package msa.admin.auth.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -12,7 +10,6 @@ import msa.admin.auth.persistence.AdminAuthDAO;
 import msa.admin.auth.service.AdminAuthService;
 import msa.admin.auth.vo.AdminUserVO;
 
-
 @Service("adminAuthService")
 public class AdminAuthServiceImpl implements AdminAuthService {
 
@@ -22,24 +19,25 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private AdminAuthDAO adminAuthDAO;
 
     @Override
-    public AdminUserVO login(String userId, String password) {
-        AdminUserVO user = adminAuthDAO.selectUserForLogin(userId);
+    public AdminUserVO login(String loginId, String password) throws Exception {
+
+        AdminUserVO param = new AdminUserVO();
+        param.setLoginId(loginId);
+
+        AdminUserVO user = adminAuthDAO.selectUserForLogin(param);
+
         if (user == null) {
-            LOGGER.info("로그인 실패 - 없는 사용자: {}", userId);
+            LOGGER.info("로그인 실패 - 존재하지 않는 계정: {}", loginId);
             return null;
         }
 
-        // TODO: 나중에 BCrypt 등으로 변경
+        // 현재는 평문 비교 (추후 BCrypt 등으로 변경 예정)
         if (!password.equals(user.getUserPw())) {
-            LOGGER.info("로그인 실패 - 비밀번호 불일치: {}", userId);
+            LOGGER.info("로그인 실패 - 비밀번호 불일치: {}", loginId);
             return null;
         }
 
-        // 역할 목록 조회
-        List<String> roles = adminAuthDAO.selectUserRoles(user.getUserId());
-        user.setRoleList(roles);
-
-        LOGGER.info("로그인 성공: {} / roles={}", userId, roles);
+        // 정상
         return user;
     }
 }

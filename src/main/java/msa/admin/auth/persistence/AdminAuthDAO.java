@@ -10,8 +10,8 @@ import msa.admin.auth.vo.AdminUserVO;
 @Repository("adminAuthDAO")
 public class AdminAuthDAO extends EgovAbstractMapper {
 
-    public AdminUserVO selectUserForLogin(String userId) {
-        return selectOne("adminAuth.selectUserForLogin", userId);
+    public AdminUserVO selectUserForLogin(AdminUserVO param) {
+        return selectOne("adminAuth.selectUserForLogin", param);
     }
 
     public List<String> selectUserRoles(String userId) {

@@ -15,8 +15,8 @@ public class MainController {
 
     @RequestMapping("/main.do")
     public String main(HttpSession session, Model model) {
-        AdminUserVO user = (AdminUserVO) session.getAttribute(LoginController.SESSION_USER_KEY);
-        model.addAttribute("user", user);
+        AdminUserVO loginUser  = (AdminUserVO) session.getAttribute(LoginController.SESSION_KEY_LOGIN_USER);
+        model.addAttribute("loginUser", loginUser);
         return "main/main";  // /WEB-INF/views/main/main.jsp
     }
 }

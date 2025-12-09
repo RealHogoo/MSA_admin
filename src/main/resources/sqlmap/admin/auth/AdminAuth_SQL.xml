@@ -6,7 +6,7 @@
 <mapper namespace="adminAuth">
 
     <!-- 사용자 조회 (로그인용) -->
-    <select id="selectUserForLogin" parameterType="string" resultType="msa.admin.auth.vo.AdminUserVO">
+    <select id="selectUserForLogin" parameterType="msa.admin.auth.vo.AdminUserVO" resultType="msa.admin.auth.vo.AdminUserVO">
         SELECT
             USER_ID    AS userId,
             LOGIN_ID    AS loginId,

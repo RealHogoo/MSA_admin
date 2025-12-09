@@ -1,62 +1,94 @@
 package msa.com.interceptor;
 
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import msa.admin.auth.vo.AdminUserVO;
 import msa.admin.auth.web.LoginController;
 
-
-public class AuthInterceptor implements HandlerInterceptor {
+public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthInterceptor.class);
+
+    // 화이트리스트 URL (로그인 체크 제외)
+    private static final String[] EXCLUDE_PATTERNS = {
+        "/login.do",
+        "/login.json",
+        "/logout.do",
+        "/health.do",
+        "/health.json",
+        "/css/",
+        "/js/",
+        "/images/"
+    };
+
+    private boolean isExcluded(String uri) {
+        if (uri == null) return false;
+
+        for (String pattern : EXCLUDE_PATTERNS) {
+            // 간단 패턴: prefix 매칭
+            if (uri.startsWith(pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
 
-        String uri = request.getRequestURI();
-        LOGGER.debug("AuthInterceptor URI = {}", uri);
+        String contextPath = request.getContextPath();
+        String uri = request.getRequestURI().substring(contextPath.length());
 
-        // 로그인/헬스/정적 리소스는 통과
-        if (uri.endsWith("/login.do") ||
-            uri.endsWith("/login.json") ||
-            uri.endsWith("/logout.do") ||
-            uri.endsWith("/health.do") ||
-            uri.endsWith("/health.json") ||
-            uri.startsWith(request.getContextPath() + "/static/")) {
+        LOGGER.debug("AuthInterceptor preHandle - uri={}", uri);
+
+        // 예외 URL이면 통과
+        if (isExcluded(uri)) {
             return true;
         }
 
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute(LoginController.SESSION_USER_KEY) != null) {
-            return true;
+        AdminUserVO loginUser = null;
+        if (session != null) {
+            Object obj = session.getAttribute(LoginController.SESSION_KEY_LOGIN_USER);
+            if (obj instanceof AdminUserVO) {
+                loginUser = (AdminUserVO) obj;
+            }
         }
 
-        // 로그인 안 된 경우 login 페이지로 리다이렉트
-        response.sendRedirect(request.getContextPath() + "/login.do");
-        return false;
-    }
+        boolean isJson = uri.endsWith(".json");
 
-    @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
-                           ModelAndView modelAndView) throws Exception {
-        // 필요하면 나중에 구현, 지금은 비워둬도 됨
-    }
+        // 세션 없음 → 로그인 필요
+        if (loginUser == null) {
 
-    @Override
-    public void afterCompletion(HttpServletRequest request,
-                                HttpServletResponse response,
-                                Object handler,
-                                Exception ex) throws Exception {
-        // 요청 완료 후 처리할 내용이 있으면 나중에 구현
+            if (isJson) {
+                // JSON 요청이면 401 + JSON 반환
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+
+                PrintWriter out = response.getWriter();
+                out.write("{\"success\":false,"
+                        + "\"message\":\"로그인이 필요합니다.\","
+                        + "\"data\":null}");
+                out.flush();
+            } else {
+                // 화면 요청이면 로그인 페이지로
+                response.sendRedirect(contextPath + "/login.do");
+            }
+            return false;
+        }
+
+        // 로그인된 상태 → 통과
+        return true;
     }
 }

@@ -23,10 +23,36 @@
         <property name="suffix" value=".jsp"/>
     </bean>
     
-	<mvc:interceptors>
+    <!--인터셉터 설정 -->
+    <mvc:interceptors>
 	    <mvc:interceptor>
+	        <!-- 전역 모든 요청에 적용 -->
 	        <mvc:mapping path="/**"/>
+	
+	        <!-- 예외 URL (화이트리스트) -->
+	        <mvc:exclude-mapping path="/login.do"/>
+	        <mvc:exclude-mapping path="/login.json"/>
+	        <mvc:exclude-mapping path="/logout.do"/>
+	        <mvc:exclude-mapping path="/health.do"/>
+	        <mvc:exclude-mapping path="/health.json"/>
+	        <mvc:exclude-mapping path="/css/**"/>
+	        <mvc:exclude-mapping path="/js/**"/>
+	        <mvc:exclude-mapping path="/images/**"/>
+	
 	        <bean class="msa.com.interceptor.AuthInterceptor"/>
 	    </mvc:interceptor>
 	</mvc:interceptors>
+	
+	<mvc:annotation-driven>
+	    <mvc:message-converters register-defaults="true">
+	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	            <property name="supportedMediaTypes">
+	                <list>
+	                    <value>application/json;charset=UTF-8</value>
+	                    <value>text/plain;charset=UTF-8</value> <!-- 필요시 -->
+	                </list>
+	            </property>
+	        </bean>
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
 </beans>

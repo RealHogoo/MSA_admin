@@ -17,7 +17,7 @@
 	<repositories>
 		<repository>
 			<id>mvn2</id>
-			<url>http://repo1.maven.org/maven2/</url>
+			<url>https://repo1.maven.org/maven2/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -27,7 +27,7 @@
 		</repository>
 		<repository>
 			<id>egovframe</id>
-			<url>http://www.egovframe.go.kr/maven/</url>
+			<url>https://www.egovframe.go.kr/maven/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -37,7 +37,7 @@
 		</repository>
 		<repository>
 			<id>egovframe2</id>
-			<url>http://maven.egovframe.kr:8080/maven/</url>
+			<url>https://maven.egovframe.kr:8080/maven/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -62,6 +62,13 @@
 		    <version>1.16</version>
 		    <scope>runtime</scope>
 		</dependency>
+		<!-- JSON -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.9.10</version> <!-- Spring 버전에 맞춰서 선택 -->
+		</dependency>
+				
 		<!-- 내꺼 끝 -->
 		<!-- 표준프레임워크 실행환경 -->
         <dependency>
@@ -265,7 +272,7 @@
                         <inherited>true</inherited>
                         <configuration>
                             <links>
-                                <link>http://docs.oracle.com/javase/6/docs/api/</link>
+                                <link>https://docs.oracle.com/javase/6/docs/api/</link>
                             </links>
                         </configuration>
                     </reportSet>
