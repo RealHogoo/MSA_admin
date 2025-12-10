@@ -112,15 +112,29 @@
     <div id="container">
         <!-- 좌측 메뉴 -->
         <nav id="sideMenu">
-            <h2>메뉴</h2>
-            <ul>
-                <!-- 추후 메뉴/권한 모듈과 연동 예정 -->
-                <li><a href="<c:url value='/main.do'/>">대시보드</a></li>
-                <li><a href="#">권한 관리(예정)</a></li>
-                <li><a href="#">메뉴 관리(예정)</a></li>
-                <li><a href="#">시스템 설정(예정)</a></li>
-            </ul>
-        </nav>
+		    <h2>메뉴</h2>
+		    <ul>
+		        <c:forEach var="m" items="${menuList}">
+		            <c:if test="${m.upMenuId == null}">
+		                <!-- 1레벨 메뉴 -->
+		                <li>
+		                    <span>${m.menuNm}</span>
+		                    <ul>
+		                        <c:forEach var="c" items="${menuList}">
+		                            <c:if test="${c.upMenuId == m.menuId}">
+		                                <li>
+		                                    <a href="<c:url value='${c.menuUrl}'/>">
+		                                        ${c.menuNm}
+		                                    </a>
+		                                </li>
+		                            </c:if>
+		                        </c:forEach>
+		                    </ul>
+		                </li>
+		            </c:if>
+		        </c:forEach>
+		    </ul>
+		</nav>
 
         <!-- 메인 컨텐츠 -->
         <main id="content">
